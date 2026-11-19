@@ -2,6 +2,8 @@
 
 把公开行情、分红、财务与卖方目标价算成几张表的**只读**页面。
 
+**在线地址**：https://sunnyman3647590.github.io/astock-data/
+
 - 数据来源：akshare（东方财富 / 同花顺 / 财联社 / 中证）
 - 页面内容：数据底座、红利收息榜、机会雷达、淘汰去向、组合回测、口径边界
 - 单文件静态页，无脚本、无外链、无跟踪，手机可直接看
@@ -15,13 +17,17 @@
 
 ## 更新方式
 
-在本地工作台跑：
+在本地工作台的目录下：
 
-```bash
-python -m app share_page --site D:\astock-share-site
+```bat
+set GITHUB_TOKEN=ghp_xxxx
+.venv\Scripts\python.exe -m app share_page --site D:\astock-share-site --push
 ```
 
-它会重新生成页面、同步到本目录、并提交一次 git。推送由 `git push` 完成，GitHub Pages 会自动发布。
+它会重新生成页面、体检、同步到本目录、提交一次 git，并用 `GITHUB_TOKEN` 推送。
+GitHub Pages 收到推送后 30~60 秒自动发布，不需要再点任何按钮。
+
+不带 `GITHUB_TOKEN` 时只提交不推送（推送会要求系统凭据），可以先 `--site` 看效果再推。
 
 ## 声明
 
