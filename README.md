@@ -24,10 +24,14 @@ set GITHUB_TOKEN=ghp_xxxx
 .venv\Scripts\python.exe -m app share_page --site D:\astock-share-site --push
 ```
 
-它会重新生成页面、体检、同步到本目录、提交一次 git，并用 `GITHUB_TOKEN` 推送。
-GitHub Pages 收到推送后 30~60 秒自动发布，不需要再点任何按钮。
+它会重新生成页面、体检、写入本目录，然后**通过 GitHub Contents API 直接更新
+`index.html`**（不经过 git push）。Pages 30~60 秒后自动发布，不用点按钮。
 
-不带 `GITHUB_TOKEN` 时只提交不推送（推送会要求系统凭据），可以先 `--site` 看效果再推。
+仓库参数在 `pages.json`（repo / branch / path），不写死在代码里。
+
+> 为什么不用 `git push`：本机 git 配了 `http.proxy=127.0.0.1:7890`，代理一关就报
+> `CONNECT tunnel failed` 或 `unexpected eof`，而 `api.github.com` 另有一条通路。
+> 少依赖一个会坏的环节。代价是本地不再保留 git 历史——历史在远端，每次发布一条提交。
 
 ## 声明
 
