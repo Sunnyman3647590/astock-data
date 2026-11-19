@@ -8,18 +8,39 @@
 *{box-sizing:border-box}
 body{margin:0;padding:22px 16px 60px;background:var(--bg);color:var(--tx);
 font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;-webkit-text-size-adjust:100%}
-.wrap{max-width:1000px;margin:0 auto}
+.wrap{max-width:1120px;margin:0 auto}
 header{margin:0 0 6px}
 h1{font-size:23px;margin:0 0 6px;letter-spacing:.5px}
 .lede{color:#4b5563;font-size:13.5px;margin:0 0 10px}
 .lede b{color:#b03a2e}
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
 .badge{font-size:12px;color:#5b6472;background:#eef1f5;border-radius:20px;padding:3px 11px}
-.nav{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 4px}
-.nav a{font-size:12.5px;color:#4b5563;text-decoration:none;background:#fff;border:1px solid var(--bd);
-border-radius:8px;padding:5px 11px}
-.nav a:hover{border-color:#c9ccd2;color:#1f2329}
-.sec{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;margin:14px 0}
+/* 左侧固定目录：这一页 5400px 高，没有它就只能一路滚回顶部。
+   桌面做成固定左栏，窄屏（<960px）自动折成吸顶横条，一套结构两用，不靠脚本。 */
+.layout{display:grid;grid-template-columns:158px minmax(0,1fr);gap:18px;align-items:start}
+.toc{position:sticky;top:16px;display:flex;flex-direction:column;gap:1px;
+background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:9px}
+.toc-h{font-size:11px;color:#b6bec9;letter-spacing:1.5px;padding:2px 8px 7px}
+.toc a{display:flex;align-items:baseline;gap:7px;font-size:12.8px;color:#4b5563;
+text-decoration:none;padding:6px 8px;border-radius:7px;border-left:2px solid transparent}
+.toc a b{font-family:var(--mono);font-size:10.5px;color:#c3cad4;font-weight:400}
+.toc a:hover{background:#f5f7fa;color:#1f2329}
+.toc a:hover b{color:#8a94a6}
+/* 点过哪个锚点，目录里就高亮哪一项。纯 CSS（:has），不加脚本；
+   不支持的浏览器只是没有高亮，不影响布局和跳转。 */
+body:has(#base:target) .toc a[href="#base"],
+body:has(#div:target) .toc a[href="#div"],
+body:has(#radar:target) .toc a[href="#radar"],
+body:has(#stage:target) .toc a[href="#stage"],
+body:has(#bt:target) .toc a[href="#bt"],
+body:has(#edge:target) .toc a[href="#edge"]{
+background:#fff4f2;color:#a8392f;font-weight:600;
+border-left-color:var(--up);border-bottom-color:var(--up)}
+.sec{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;
+margin:0 0 14px;scroll-margin-top:16px}
+.sec:first-child{margin-top:0}
+/* 被跳转到的区块给一圈主色描边，确认「跳对了地方」 */
+section.sec:target{border-color:#f0cfc9;box-shadow:0 0 0 3px rgba(214,69,61,.07)}
 h2{font-size:15.5px;margin:0 0 8px;color:#1f2329;display:flex;align-items:baseline;gap:8px}
 h2 .no{font-family:var(--mono);font-size:12px;color:#b6bec9}
 h2 .cnt{font-size:12px;color:var(--mut);font-weight:400}
@@ -84,6 +105,18 @@ border-radius:10px;padding:12px 16px;margin:14px 0 2px}
 .warn ul{margin:0;padding-left:18px}
 .warn li{font-size:12.8px;color:#5b4a45;margin:5px 0;line-height:1.7}
 footer{color:var(--mut);font-size:12px;text-align:center;margin:22px 0 0;line-height:1.9}
+/* 窄屏放不下左栏：目录折成吸顶横条，随时能点，不再有「滚到一半没导航」的窗口 */
+@media(max-width:960px){
+  .layout{grid-template-columns:minmax(0,1fr);gap:0}
+  .toc{position:sticky;top:0;z-index:20;flex-direction:row;overflow-x:auto;gap:6px;
+  border-radius:0 0 10px 10px;padding:7px 8px;margin:0 0 10px;scrollbar-width:none}
+  .toc::-webkit-scrollbar{display:none}
+  .toc-h{display:none}
+  .toc a{white-space:nowrap;border-left:none;border-bottom:2px solid transparent;
+  padding:5px 9px;background:#f5f7fa}
+  .toc a b{display:none}
+  .sec{scroll-margin-top:56px}
+}
 @media(max-width:640px){
   body{padding:16px 10px 48px}
   h1{font-size:19px}
@@ -107,11 +140,19 @@ footer{color:var(--mut);font-size:12px;text-align:center;margin:22px 0 0;line-he
     <span class="badge">口径版本 btp0.1.0</span>
     <span class="badge">来源 akshare（东财 / 同花顺 / 财联社 / 中证）</span>
   </div>
-  <nav class="nav">
-    <a href="#base">数据底座</a><a href="#div">红利收息榜</a><a href="#radar">机会雷达</a>
-    <a href="#stage">淘汰去向</a><a href="#bt">组合回测</a><a href="#edge">边界</a>
-  </nav>
 </header>
+
+<div class="layout">
+<aside class="toc">
+  <div class="toc-h">目录</div>
+  <a href="#base"><b>01</b>数据底座</a>
+  <a href="#div"><b>02</b>红利收息榜</a>
+  <a href="#radar"><b>03</b>机会雷达</a>
+  <a href="#stage"><b>04</b>淘汰去向</a>
+  <a href="#bt"><b>05</b>组合回测</a>
+  <a href="#edge"><b>06</b>边界</a>
+</aside>
+<main>
 
 <section class="sec" id="base">
   <h2><span class="no">01</span>先看数据底座</h2>
@@ -176,6 +217,9 @@ footer{color:var(--mut);font-size:12px;text-align:center;margin:22px 0 0;line-he
   <h2><span class="no">06</span>四条边界，看完再决定信几分</h2>
   <div class="warn"><ul><li>幸存者偏差：池子用的是「今天还在的股票」，历史退市、被调出成分的票不在库里，所以回测收益天然偏乐观。这条消不掉，只能记住。</li><li>基准不含分红：策略净值含持有期分红与送转，基准是纯价格——这个对比其实对策略有利，它还能跑输，就说明问题不在分红算没算。</li><li>风格依赖：这套规则押「便宜 + 分红 + 低波」。2022 年之后价值/红利风格反转，它才赢；在那之前它是跑输的。分年表里自己看。</li><li>不是投资建议：这里只有公开数据的整理与规则计算，没有内幕、没有预测、没有保证。买卖决定和后果都在自己。</li></ul></div>
 </section>
+
+</main>
+</div>
 
 <footer>
   由本地工作台生成 · 单文件、无外链、无跟踪脚本 · 数据来源 akshare<br>
